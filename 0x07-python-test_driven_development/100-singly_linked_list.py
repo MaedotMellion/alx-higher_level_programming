@@ -1,77 +1,57 @@
 #!/usr/bin/python3
-# 100-singly_linked_list.py
-"""Define classes for a singly-linked list."""
+
+"""
+File: 100-matrix_mul.py
+Desc: This file supplies one function called matrix_mul
+Author: Gizachew Bayness (Elec Crazy)
+Date Created: Jul 23 2022
+"""
 
 
-class Node:
-    """Represent a node in a singly-linked list."""
+def matrix_mul(m_a, m_b):
+    """
+    This function multiplies two matrices.
+    """
+    if type(m_a) != list:
+        raise TypeError("m_a must be a list")
+    if type(m_b) != list:
+        raise TypeError("m_b must be a list")
+    if not all(type(lists) == list for lists in m_a):
+        raise TypeError("m_a must be a list of lists")
+    if not all(type(lists) == list for lists in m_b):
+        raise TypeError("m_b must be a list of lists")
+    if m_a == [] or m_a == [[]]:
+        raise ValueError("m_a can't be empty")
+    if m_b == [] or m_b == [[]]:
+        raise ValueError("m_b can't be empty")
+    if not (all(type(item) in [int, float] for item in [item for lists
+            in m_a for item in lists])):
+        raise TypeError("m_a should contain only integers or floats")
+    if not (all(type(item) in [int, float] for item in [item for lists
+            in m_b for item in lists])):
+        raise TypeError("m_b should contain only integers or floats")
+    if not all(len(lists) == len(m_a[0]) for lists in m_a):
+        raise TypeError("each row of m_a must be of the same size")
+    if not all(len(lists) == len(m_b[0]) for lists in m_b):
+        raise TypeError("each row of m_b must be of the same size")
+    if len(m_a[0]) != len(m_b):
+        raise ValueError("m_a and m_b can't be multiplied")
 
-    def __init__(self, data, next_node=None):
-        """Initialize a new Node.
-        Args:
-            data (int): The data of the new Node.
-            next_node (Node): The next node of the new Node.
-        """
-        self.data = data
-        self.next_node = next_node
+    for_calc = []
+    for r in range(len(m_b[0])):
+        new_row = []
+        for c in range(len(m_b)):
+            new_row.append(m_b[c][r])
+        for_calc.append(new_row)
 
-    @property
-    def data(self):
-        """Get/set the data of the Node."""
-        return (self.__data)
+    new_matrix = []
+    for row in m_a:
+        new_row = []
+        for col in for_calc:
+            prod = 0
+            for i in range(len(for_calc[0])):
+                prod += row[i] * col[i]
+            new_row.append(prod)
+        new_matrix.append(new_row)
 
-    @data.setter
-    def data(self, value):
-        if not isinstance(value, int):
-            raise TypeError("data must be an integer")
-        self.__data = value
-
-    @property
-    def next_node(self):
-        """Get/set the next_node of the Node."""
-        return (self.__next_node)
-
-    @next_node.setter
-    def next_node(self, value):
-        if not isinstance(value, Node) and value is not None:
-            raise TypeError("next_node must be a Node object")
-        self.__next_node = value
-
-
-class SinglyLinkedList:
-    """Represent a singly-linked list."""
-
-    def __init__(self):
-        """Initalize a new SinglyLinkedList."""
-        self.__head = None
-
-    def sorted_insert(self, value):
-        """Insert a new Node to the SinglyLinkedList.
-        The node is inserted into the list at the correct
-        ordered numerical position.
-        Args:
-            value (Node): The new Node to insert.
-        """
-        new = Node(value)
-        if self.__head is None:
-            new.next_node = None
-            self.__head = new
-        elif self.__head.data > value:
-            new.next_node = self.__head
-            self.__head = new
-        else:
-            tmp = self.__head
-            while (tmp.next_node is not None and
-                    tmp.next_node.data < value):
-                tmp = tmp.next_node
-            new.next_node = tmp.next_node
-            tmp.next_node = new
-
-    def __str__(self):
-        """Define the print() representation of a SinglyLinkedList."""
-        values = []
-        tmp = self.__head
-        while tmp is not None:
-            values.append(str(tmp.data))
-            tmp = tmp.next_node
-        return ('\n'.join(values))
+    return new_matrix
